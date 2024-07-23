@@ -1,16 +1,24 @@
 PODS:
-  - shared (1.0)
+  - Reachability (3.2)
+  - shared (1.0):
+    - Reachability (= 3.2)
 
 DEPENDENCIES:
+  - Reachability
   - shared (from `../shared`)
+
+SPEC REPOS:
+  trunk:
+    - Reachability
 
 EXTERNAL SOURCES:
   shared:
     :path: "../shared"
 
 SPEC CHECKSUMS:
-  shared: 96c066cfd2b0eab0963c51fee6cb6673e8cbba1a
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  shared: e00906c3b4d147c6f1535466ee2fb1303a08e189
 
-PODFILE CHECKSUM: 78d6cc1b71b232202c48a29d4e6c34972c534c73
+PODFILE CHECKSUM: d8fab2865e308c35e8e598d2b212bb80eac20da4
 
 COCOAPODS: 1.13.0
