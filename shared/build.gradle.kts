@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.libres)
 
 }
 
@@ -58,6 +59,7 @@ kotlin {
             implementation(libs.ktor.client.serialization)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.logging)
 
             /**
              * Voyager
@@ -75,6 +77,26 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
+            /**
+             * Libres
+             */
+            implementation(libs.libres.compose)
+
+            /**
+             * Koin
+             */
+            implementation(libs.koin.core)
+
+            implementation(libs.orbit.mvi.core)
+
+            /**
+             * Koil
+             */
+            implementation(libs.coil.compose.core)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.mp)
+            implementation(libs.coil.network.ktor)
 
         }
         commonTest.dependencies {
@@ -97,10 +119,18 @@ android {
 dependencies {
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.runtime.android)
+    implementation(libs.androidx.ui.text.android)
     val ktorfitVersion = libs.versions.ktorfitVersion
     add("kspCommonMainMetadata", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
     add("kspAndroid", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
     add("kspIosX64", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
     add("kspIosArm64", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
     add("kspIosSimulatorArm64", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
+}
+
+libres {
+    generatedClassName = "KMPResource" // "Res" by default
+    generateNamedArguments = true // false by default
+    baseLocaleLanguageCode = "ru" // "en" by default
+    camelCaseNamesForAppleFramework = true // false by default
 }

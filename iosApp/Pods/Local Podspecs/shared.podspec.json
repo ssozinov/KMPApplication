@@ -34,6 +34,6 @@
     }
   ],
   "resources": [
-    "build/compose/cocoapods/compose-resources"
+    "build/generated/libres/apple/libres-bundles"
   ]
 }

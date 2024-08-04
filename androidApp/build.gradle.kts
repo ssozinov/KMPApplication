@@ -41,5 +41,9 @@ dependencies {
     implementation(projects.shared)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.activity.compose)
-
+    /**
+     * Koin
+     */
+    implementation(libs.koin.core)
+    implementation(libs.koin.androidx.compose)
 }

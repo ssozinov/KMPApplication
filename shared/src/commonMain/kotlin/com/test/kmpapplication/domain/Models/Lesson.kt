@@ -17,5 +17,6 @@ data class Lesson(
     val serviceId: String,
     val startTime: String,
     val tab: String,
-    val tabId: Int
+    val tabId: Int,
+    val trainerImage: String
 )
