@@ -1,6 +1,5 @@
 package com.test.kmpapplication.data.a.repository
 
-import com.test.kmpapplication.data.a.Mapper.toLesson
 import com.test.kmpapplication.data.a.Mapper.toTrainers
 import com.test.kmpapplication.data.a.Mapper.toTraningInfo
 import com.test.kmpapplication.data.a.api.ApiService

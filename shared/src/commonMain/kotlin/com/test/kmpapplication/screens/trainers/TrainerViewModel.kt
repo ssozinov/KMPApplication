@@ -6,6 +6,7 @@ import org.koin.core.component.inject
 
 internal class TrainerViewModel :
     BaseScreenModel<TrainerState, TrainerEvent>(TrainerState.InitState) {
+
     private val getTrainersUseCase: GetTrainersUseCase by inject()
     fun getTrainers(clubId: String) = intent {
         launchOperation(

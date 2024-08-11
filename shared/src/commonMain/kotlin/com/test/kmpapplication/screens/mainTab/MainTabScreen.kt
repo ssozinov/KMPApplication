@@ -25,6 +25,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
+import com.test.kmpapplication.screens.mainTab.tabs.FavouriteTab
 import com.test.kmpapplication.screens.mainTab.tabs.MainTab
 import com.test.kmpapplication.screens.mainTab.tabs.TrainerTab
 
@@ -33,7 +34,7 @@ class MainTabScreen(private val tab: Tab = MainTab) : Screen {
 
     @Composable
     override fun Content() {
-        val tabs = listOf(MainTab, TrainerTab)
+        val tabs = listOf(MainTab, TrainerTab,FavouriteTab)
         TabNavigator(
             tab = tab
         ) {

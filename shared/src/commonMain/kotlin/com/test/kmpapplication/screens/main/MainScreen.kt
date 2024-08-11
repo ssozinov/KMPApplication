@@ -23,7 +23,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -94,7 +97,7 @@ class MainScreen : Screen {
                                 ),
                                 alpha = DefaultAlpha
                             )
-                            Column(modifier = Modifier.padding(start = 8.dp)) {
+                            Column(modifier = Modifier.padding(start = 8.dp).weight(1f)) {
                                 Text(
                                     text = it.date + " " + it.startTime,
                                     fontWeight = FontWeight.W500,
@@ -122,6 +125,16 @@ class MainScreen : Screen {
                                     modifier = Modifier.padding(top = 5.dp)
                                 )
                             }
+                            Icon(
+                                imageVector = Icons.Default.FavoriteBorder,
+                                contentDescription = "Add to favorites",
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .align(Alignment.CenterVertically)
+                                    .clickable {
+                                        viewModel.insertInFavorites(it)
+                                    }
+                            )
                         }
                     }
                 }
@@ -170,10 +183,12 @@ class MainScreen : Screen {
                 Text(text = "Дата: ${training.date} ${training.startTime}")
                 Text(text = "Место: ${training.place}")
                 Text(text = "Тип: ${training.tab}")
+
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = { onDismiss() }) {
                     Text(text = "Закрыть")
                 }
+
             }
         }
     }

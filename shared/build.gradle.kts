@@ -8,11 +8,12 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.libres)
+    alias(libs.plugins.sqldelight)
 
 }
 
 configure<de.jensklingenberg.ktorfit.gradle.KtorfitGradleConfiguration>{
-    version = libs.versions.ktorfitVersion
+    version = libs.versions.ktorfitVersion.get()
 }
 
 kotlin {
@@ -99,6 +100,15 @@ kotlin {
             implementation(libs.coil.network.ktor)
 
         }
+
+        iosMain.dependencies {
+            implementation(libs.sqldelight.driver.ios)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.sqldelight.driver.android)
+        }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
@@ -120,6 +130,7 @@ dependencies {
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.runtime.android)
     implementation(libs.androidx.ui.text.android)
+
     val ktorfitVersion = libs.versions.ktorfitVersion
     add("kspCommonMainMetadata", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
     add("kspAndroid", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
@@ -129,8 +140,15 @@ dependencies {
 }
 
 libres {
-    generatedClassName = "KMPResource" // "Res" by default
-    generateNamedArguments = true // false by default
-    baseLocaleLanguageCode = "ru" // "en" by default
-    camelCaseNamesForAppleFramework = true // false by default
+    generatedClassName = "KMPResource"
+    generateNamedArguments = true
+    baseLocaleLanguageCode = "ru"
+    camelCaseNamesForAppleFramework = true
+}
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("com.test.kmpapplication")
+        }
+    }
 }

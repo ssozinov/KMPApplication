@@ -1,0 +1,20 @@
+CREATE TABLE trainingBucketDB(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT,
+    startTime TEXT,
+    place TEXT,
+    tab TEXT,
+    trainerImage TEXT
+);
+
+insertTraining:
+INSERT INTO trainingBucketDB(date, startTime, place, tab, trainerImage) VALUES (?, ?, ?, ?, ?);
+
+loadTrainingFromBucket:
+SELECT * FROM trainingBucketDB;
+
+deleteTrainingFromBucketByID:
+DELETE FROM trainingBucketDB WHERE id = :id;
+
+deleteTrainingBucket:
+DELETE FROM trainingBucketDB;

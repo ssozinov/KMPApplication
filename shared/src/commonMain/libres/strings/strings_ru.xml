@@ -2,4 +2,6 @@
 <resources>
     <string name="trainer">Trainers</string>
     <string name="main">Training</string>
+    <string name="favourite">Favourite</string>
+    <string name="delete_all">Delete all</string>
 </resources>
