@@ -24,8 +24,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.DefaultAlpha
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,7 +54,12 @@ import cafe.adriel.voyager.core.screen.Screen
 import coil3.compose.rememberAsyncImagePainter
 import com.test.kmpapplication.domain.Models.Lesson
 import com.test.kmpapplication.utils.changesBaseUrl
+import com.test.kmpapplication.utils.containsLesson
 import com.test.kmpapplication.utils.parseColor
+import com.test.kmpapplication.utils.toFavouriteUI
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MainScreen : Screen {
@@ -60,9 +70,13 @@ class MainScreen : Screen {
         val state by viewModel.stateFlow.collectAsState()
         var showDialog by remember { mutableStateOf(false) }
         var selectedTraining by remember { mutableStateOf<Lesson?>(null) }
-        LaunchedEffect(viewModel) {
+        val snackbarHostState = remember { SnackbarHostState() }
+
+        LaunchedEffect(Unit) {
             viewModel.getAllTrainings()
+            viewModel.loadFavoriteTrainings()
         }
+
         Box(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
                 contentPadding = PaddingValues(vertical = 20.dp),
@@ -71,7 +85,7 @@ class MainScreen : Screen {
                 verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
                 items(state.trainings.lessons) {
-
+                    val isFavorite = state.favoriteTrainings.containsLesson(lesson = it)
                     val cardColor = parseColor(it.color)
                     Card(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).clickable {
@@ -125,20 +139,30 @@ class MainScreen : Screen {
                                     modifier = Modifier.padding(top = 5.dp)
                                 )
                             }
-                            Icon(
-                                imageVector = Icons.Default.FavoriteBorder,
-                                contentDescription = "Add to favorites",
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .align(Alignment.CenterVertically)
-                                    .clickable {
-                                        viewModel.insertInFavorites(it)
-                                    }
-                            )
+                            FavoriteIcon(isFavorite = isFavorite) {
+                                if (isFavorite) {
+                                    viewModel.removeFromFavorites(it.toFavouriteUI(state.favoriteTrainings))
+                                } else {
+                                    viewModel.insertInFavorites(it)
+                                }
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    snackbarHostState.showSnackbar(
+                                        message = if (isFavorite) "Удалено из избранного" else "Добавлено в избранное",
+                                        duration = SnackbarDuration.Short
+                                    )
+                                }
+                            }
                         }
                     }
                 }
             }
+
+
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
+
             AnimatedVisibility(
                 visible = showDialog,
                 enter = fadeIn(),
@@ -190,6 +214,25 @@ class MainScreen : Screen {
                 }
 
             }
+        }
+    }
+
+    @Composable
+    fun FavoriteIcon(isFavorite: Boolean, onClick: () -> Unit) {
+        val icon: ImageVector =
+            if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
+        Box(
+            modifier = Modifier
+                .size(24.dp)
+                .clip(CircleShape)
+                .clickable { onClick() }
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+
+                modifier = Modifier.matchParentSize()
+            )
         }
     }
 }

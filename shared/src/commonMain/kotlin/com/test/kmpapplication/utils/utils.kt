@@ -3,6 +3,8 @@ package com.test.kmpapplication.utils
 import androidx.compose.ui.graphics.Color
 import com.test.kmpapplication.di.AppConfig
 import com.test.kmpapplication.di.KoinInjector
+import com.test.kmpapplication.domain.Models.FavouriteUI
+import com.test.kmpapplication.domain.Models.Lesson
 
 fun parseColor(colorString: String): Color {
     return try {
@@ -18,4 +20,20 @@ fun parseColor(colorString: String): Color {
 
 fun changesBaseUrl(newUrl: String) {
     KoinInjector.updateBaseUrl(newUrl)
+}
+
+fun List<FavouriteUI>.containsLesson(lesson: Lesson): Boolean {
+    return this.any { favourite ->
+        favourite.date == lesson.date &&
+                favourite.startTime == lesson.startTime &&
+                favourite.place == lesson.place
+    }
+}
+
+fun Lesson.toFavouriteUI(favourites: List<FavouriteUI>): FavouriteUI {
+    return favourites.first{
+        it.date == this.date &&
+                it.startTime == this.startTime &&
+                it.place == this.place
+    }
 }
