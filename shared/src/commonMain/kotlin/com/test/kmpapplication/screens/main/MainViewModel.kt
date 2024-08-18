@@ -1,13 +1,10 @@
 package com.test.kmpapplication.screens.main
 
 import com.test.kmpapplication.data.a.db.TrainingDataSource
-import com.test.kmpapplication.domain.Models.FavouriteUI
 import com.test.kmpapplication.domain.Models.Lesson
 import com.test.kmpapplication.domain.UseCases.GetTrainingUseCase
 import com.test.kmpapplication.platform.BaseScreenModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.test.kmpapplication.utils.getFavouriteUI
 import org.koin.core.component.inject
 
 internal class MainViewModel : BaseScreenModel<MainState, MainEvent>(MainState.InitState) {
@@ -18,7 +15,7 @@ internal class MainViewModel : BaseScreenModel<MainState, MainEvent>(MainState.I
 
     init {
         loadFavoriteTrainings()
-        loadFavoriteTrainings()
+        getAllTrainings()
     }
 
     fun getAllTrainings() = intent {
@@ -28,6 +25,8 @@ internal class MainViewModel : BaseScreenModel<MainState, MainEvent>(MainState.I
             },
             success = {
                 reduceLocal {
+                    it.lessons
+                        .map {lesson -> if (state.favoriteTrainings.any { it.trainingID == lesson.trainingID }) lesson.isFavourite = true}
                     state.copy(trainings = it)
                 }
             },
@@ -46,13 +45,32 @@ internal class MainViewModel : BaseScreenModel<MainState, MainEvent>(MainState.I
         }
     }
 
-    fun insertInFavorites(training: Lesson) = intent {
-        dataSource.insertTraining(training)
+    private fun insertInFavorites(lesson: Lesson) = intent {
+        dataSource.insertTraining(lesson)
         loadFavoriteTrainings()
     }
 
-    fun removeFromFavorites(favorite: FavouriteUI) = intent {
-        dataSource.deleteFavouriteItem(favorite.id.toLong())
+    private fun removeFromFavorites(lesson: Lesson) = intent {
+        val favouriteItem = lesson.getFavouriteUI(state.favoriteTrainings)
+        dataSource.deleteFavouriteItem(favouriteItem.id.toLong())
         loadFavoriteTrainings()
+    }
+
+    fun pressFavoriteButton(lesson: Lesson) = intent {
+        val isFavorite = state.favoriteTrainings.any { it.trainingID == lesson.trainingID }
+        val updatedTrainings = state.trainings.lessons.map {
+            if (it.trainingID == lesson.trainingID) it.copy(isFavourite = !it.isFavourite) else it
+        }
+        if (isFavorite) {
+            removeFromFavorites(lesson)
+
+        } else {
+            insertInFavorites(lesson)
+        }
+        reduce {
+            state.copy(
+                trainings = state.trainings.copy(lessons = updatedTrainings)
+            )
+        }
     }
 }

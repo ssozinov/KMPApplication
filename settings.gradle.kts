@@ -4,6 +4,7 @@ pluginManagement {
         google()
         gradlePluginPortal()
         mavenCentral()
+        maven("https://maven.pkg.github.com/cy6ergn0m/kotlinx-uuid")
     }
 }
 

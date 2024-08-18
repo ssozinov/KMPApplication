@@ -4,11 +4,12 @@ CREATE TABLE trainingBucketDB(
     startTime TEXT,
     place TEXT,
     tab TEXT,
-    trainerImage TEXT
+    trainerImage TEXT,
+    trainingID TEXT
 );
 
 insertTraining:
-INSERT INTO trainingBucketDB(date, startTime, place, tab, trainerImage) VALUES (?, ?, ?, ?, ?);
+INSERT INTO trainingBucketDB(date, startTime, place, tab, trainerImage, trainingID) VALUES (?, ?, ?, ?, ?, ?);
 
 loadTrainingFromBucket:
 SELECT * FROM trainingBucketDB;

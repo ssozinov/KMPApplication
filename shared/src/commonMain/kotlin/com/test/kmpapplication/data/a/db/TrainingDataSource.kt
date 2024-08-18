@@ -11,31 +11,33 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class TrainingDataSource(private val db: Database) {
-    private val table = db.trainingQueries
+    private val dataSource = db.trainingQueries
     private val scope = CoroutineScope(Job() + Dispatchers.IO)
 
     fun insertTraining(training: Lesson) {
         scope.launch {
-            table.insertTraining(
+            dataSource.insertTraining(
                 date = training.date,
                 startTime = training.startTime,
                 place = training.place,
                 tab = training.tab,
-                trainerImage = training.trainerImage
+                trainerImage = training.trainerImage,
+                trainingID = training.trainingID
             )
         }
     }
 
     suspend fun loadAllTrainings(): List<FavouriteUI> {
         val result = scope.async {
-            table.loadTrainingFromBucket().executeAsList().map {
+            dataSource.loadTrainingFromBucket().executeAsList().map {
                 FavouriteUI(
                     id = it.id.toInt(),
                     date = it.date.orEmpty(),
                     startTime = it.startTime.orEmpty(),
                     place = it.place.orEmpty(),
                     tab = it.tab.orEmpty(),
-                    trainerImage = it.trainerImage.orEmpty()
+                    trainerImage = it.trainerImage.orEmpty(),
+                    trainingID = it.trainingID.orEmpty()
                 )
             }
         }.await()
@@ -44,14 +46,13 @@ class TrainingDataSource(private val db: Database) {
 
     fun deleteFavouriteItem(id: Long) {
         scope.launch {
-            table.deleteTrainingFromBucketByID(id)
-
+            dataSource.deleteTrainingFromBucketByID(id)
         }
     }
 
     fun cleanFavourites() {
         scope.launch {
-            table.deleteTrainingBucket()
+            dataSource.deleteTrainingBucket()
         }
     }
 }

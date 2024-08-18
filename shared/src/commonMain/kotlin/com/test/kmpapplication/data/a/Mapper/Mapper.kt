@@ -8,7 +8,7 @@ import com.test.kmpapplication.domain.Models.Lesson
 import com.test.kmpapplication.domain.Models.Trainer
 import com.test.kmpapplication.domain.Models.TrainingInfo
 
-fun TrainingDTO.toTraningInfo(): TrainingInfo {
+fun TrainingDTO.toTrainingInfo(): TrainingInfo {
     val trainersList = trainers?.filterNotNull()?.map { it.toTrainers() } ?: listOf()
     return TrainingInfo(
         lessons = lessons?.filterNotNull()!!.map { it.toLesson(trainers = trainersList) },

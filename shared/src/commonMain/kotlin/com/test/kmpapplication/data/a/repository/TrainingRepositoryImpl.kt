@@ -1,7 +1,7 @@
 package com.test.kmpapplication.data.a.repository
 
 import com.test.kmpapplication.data.a.Mapper.toTrainers
-import com.test.kmpapplication.data.a.Mapper.toTraningInfo
+import com.test.kmpapplication.data.a.Mapper.toTrainingInfo
 import com.test.kmpapplication.data.a.api.ApiService
 import com.test.kmpapplication.domain.Models.Trainer
 import com.test.kmpapplication.domain.Models.TrainingInfo
@@ -15,15 +15,15 @@ class TrainingRepositoryImpl(private val apiService: ApiService) : TrainingRepos
         return apiCall(
             call = { apiService.getTrainingInfo() },
             mapResponse = { response ->
-                response.toTraningInfo()
+                response.toTrainingInfo()
             }
         )
     }
 
-    override suspend fun getTrainers(clubId:String): Either<Failure, List<Trainer>> {
-        return apiCall (
-            call = {apiService.getTrainersInfo(clubId)},
-            mapResponse = {response ->
+    override suspend fun getTrainers(clubId: String): Either<Failure, List<Trainer>> {
+        return apiCall(
+            call = { apiService.getTrainersInfo(clubId) },
+            mapResponse = { response ->
                 response.trainers?.filterNotNull()!!.map { it.toTrainers() }
             }
         )

@@ -1,7 +1,6 @@
 package com.test.kmpapplication.utils
 
 import androidx.compose.ui.graphics.Color
-import com.test.kmpapplication.di.AppConfig
 import com.test.kmpapplication.di.KoinInjector
 import com.test.kmpapplication.domain.Models.FavouriteUI
 import com.test.kmpapplication.domain.Models.Lesson
@@ -30,10 +29,8 @@ fun List<FavouriteUI>.containsLesson(lesson: Lesson): Boolean {
     }
 }
 
-fun Lesson.toFavouriteUI(favourites: List<FavouriteUI>): FavouriteUI {
-    return favourites.first{
-        it.date == this.date &&
-                it.startTime == this.startTime &&
-                it.place == this.place
+fun Lesson.getFavouriteUI(favourites: List<FavouriteUI>): FavouriteUI {
+    return favourites.first {
+        it.trainingID == this.trainingID
     }
 }

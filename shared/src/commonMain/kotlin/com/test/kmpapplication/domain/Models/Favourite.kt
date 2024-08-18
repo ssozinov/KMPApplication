@@ -6,7 +6,8 @@ data class FavouriteUI (
     val date: String,
     val place: String,
     val tab: String,
-    val trainerImage: String
+    val trainerImage: String,
+    val trainingID: String
 ){
     companion object Default{
         val favouriteUI = FavouriteUI(
@@ -15,7 +16,8 @@ data class FavouriteUI (
             date = "",
             place = "",
             tab = "",
-            trainerImage = ""
+            trainerImage = "",
+            trainingID = ""
         )
     }
 }

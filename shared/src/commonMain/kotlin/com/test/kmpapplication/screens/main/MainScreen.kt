@@ -37,6 +37,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,12 +54,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import coil3.compose.rememberAsyncImagePainter
 import com.test.kmpapplication.domain.Models.Lesson
-import com.test.kmpapplication.utils.changesBaseUrl
-import com.test.kmpapplication.utils.containsLesson
 import com.test.kmpapplication.utils.parseColor
-import com.test.kmpapplication.utils.toFavouriteUI
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -66,6 +62,7 @@ class MainScreen : Screen {
 
     @Composable
     override fun Content() {
+        val scopeModel = rememberCoroutineScope()
         val viewModel = rememberScreenModel { MainViewModel() }
         val state by viewModel.stateFlow.collectAsState()
         var showDialog by remember { mutableStateOf(false) }
@@ -73,8 +70,9 @@ class MainScreen : Screen {
         val snackbarHostState = remember { SnackbarHostState() }
 
         LaunchedEffect(Unit) {
-            viewModel.getAllTrainings()
-            viewModel.loadFavoriteTrainings()
+                viewModel.loadFavoriteTrainings()
+                viewModel.getAllTrainings()
+
         }
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -85,11 +83,11 @@ class MainScreen : Screen {
                 verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
                 items(state.trainings.lessons) {
-                    val isFavorite = state.favoriteTrainings.containsLesson(lesson = it)
                     val cardColor = parseColor(it.color)
                     Card(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).clickable {
-                            changesBaseUrl("https://test-changes.com/")
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .clickable {
                             selectedTraining = it
                             showDialog = true
                         }
@@ -139,15 +137,11 @@ class MainScreen : Screen {
                                     modifier = Modifier.padding(top = 5.dp)
                                 )
                             }
-                            FavoriteIcon(isFavorite = isFavorite) {
-                                if (isFavorite) {
-                                    viewModel.removeFromFavorites(it.toFavouriteUI(state.favoriteTrainings))
-                                } else {
-                                    viewModel.insertInFavorites(it)
-                                }
-                                CoroutineScope(Dispatchers.Main).launch {
+                            FavoriteIcon(isFavorite = it.isFavourite) {
+                                viewModel.pressFavoriteButton(it)
+                                scopeModel.launch {
                                     snackbarHostState.showSnackbar(
-                                        message = if (isFavorite) "Удалено из избранного" else "Добавлено в избранное",
+                                        message = if (it.isFavourite) "Удалено из избранного" else "Добавлено в избранное",
                                         duration = SnackbarDuration.Short
                                     )
                                 }
